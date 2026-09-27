@@ -1,0 +1,27 @@
+{
+  "name": "release-check-mcr",
+  "version": "1.0.0",
+  "description": "ReleaseCheck - All-in-one Release Checklist Tool (React + Redux Toolkit + Bootstrap + Express + PostgreSQL)",
+  "scripts": {
+    "start": "npm --prefix server start",
+    "server": "npm --prefix server run dev",
+    "client": "npm --prefix client start",
+    "build": "npm --prefix client run build",
+    "test:server": "npm --prefix server test",
+    "test:client": "npm --prefix client test -- --watchAll=false",
+    "test": "npm run test:server && npm run test:client",
+    "stress": "npm --prefix server run stress",
+    "seed": "npm --prefix server run seed"
+  },
+  "keywords": [
+    "release-checklist",
+    "react",
+    "redux-toolkit",
+    "bootstrap",
+    "express",
+    "postgresql",
+    "neon"
+  ],
+  "author": "",
+  "license": "MIT"
+}

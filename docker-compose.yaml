@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DATABASE_URL=postgresql://neondb_owner:npg_QJ6vwHVRPTz9@ep-young-grass-ath18xm9-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    restart: unless-stopped
