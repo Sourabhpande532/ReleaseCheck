@@ -1,4 +1,4 @@
-const CACHE_NAME = 'releasecheck-v1';
+const CACHE_NAME = 'releasecheck-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -31,10 +31,22 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Pass API calls directly to network
-  if (event.request.url.includes('/api/')) {
+  const req = event.request;
+
+  // Ignore non-GET requests
+  if (req.method !== 'GET') {
+    return;
+  }
+
+  // Ignore unsupported schemes (chrome-extension://, moz-extension://, file://, etc.)
+  if (!req.url.startsWith('http://') && !req.url.startsWith('https://')) {
+    return;
+  }
+
+  // Pass API requests directly to the network without caching
+  if (req.url.includes('/api/')) {
     event.respondWith(
-      fetch(event.request).catch(() => {
+      fetch(req).catch(() => {
         return new Response(
           JSON.stringify({
             success: false,
@@ -50,20 +62,32 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network first with cache fallback for HTML and assets
+  // Only cache same-origin static assets
+  try {
+    const url = new URL(req.url);
+    if (url.origin !== self.location.origin) {
+      return;
+    }
+  } catch {
+    return;
+  }
+
+  // Network first with cache fallback for HTML and same-origin assets
   event.respondWith(
-    fetch(event.request)
+    fetch(req)
       .then((response) => {
         if (response && response.status === 200 && response.type === 'basic') {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
+            cache.put(req, responseToCache).catch(() => {
+              // Ignore cache put errors safely
+            });
           });
         }
         return response;
       })
       .catch(() => {
-        return caches.match(event.request);
+        return caches.match(req);
       })
   );
 });

@@ -23,6 +23,19 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Root status endpoint
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'ReleaseCheck API is live and operational',
+    endpoints: {
+      health: '/api/health',
+      steps: '/api/steps',
+      releases: '/api/releases'
+    }
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({
