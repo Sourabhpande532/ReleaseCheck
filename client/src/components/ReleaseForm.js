@@ -232,23 +232,22 @@ const ReleaseForm = () => {
             {steps.map((step) => {
               const isChecked = completedSteps.includes(step.id);
               return (
-                <div
+                <label
                   key={step.id}
                   className={`checklist-item ${isChecked ? 'checked' : ''}`}
-                  onClick={() => handleStepToggle(step.id)}
+                  htmlFor={`step-${step.id}`}
                 >
                   <input
                     type="checkbox"
                     id={`step-${step.id}`}
                     checked={isChecked}
-                    onChange={() => {}} // handled by parent div onClick
-                    onClick={(e) => e.stopPropagation()}
+                    onChange={() => handleStepToggle(step.id)}
                     aria-checked={isChecked}
                   />
-                  <label htmlFor={`step-${step.id}`} className="checklist-label mb-0">
+                  <span className="checklist-label mb-0">
                     {step.label}
-                  </label>
-                </div>
+                  </span>
+                </label>
               );
             })}
           </div>

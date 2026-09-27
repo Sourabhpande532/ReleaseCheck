@@ -88,7 +88,13 @@ describe('ReleaseCheck App Flow', () => {
     const stepText = screen.getByText(/All relevant Github pull requests have been merged/i);
     expect(screen.getByText(/0 of 2 completed/i)).toBeInTheDocument();
 
+    // Click label
     fireEvent.click(stepText);
     expect(screen.getByText(/1 of 2 completed/i)).toBeInTheDocument();
+
+    // Click checkbox directly
+    const checkbox2 = screen.getByRole('checkbox', { name: /CHANGELOG.md files have been updated/i });
+    fireEvent.click(checkbox2);
+    expect(screen.getByText(/2 of 2 completed/i)).toBeInTheDocument();
   });
 });
